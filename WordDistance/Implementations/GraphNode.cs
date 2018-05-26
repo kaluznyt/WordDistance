@@ -10,6 +10,8 @@ namespace WordDistance.Implementations
             ReferencedNodes = new List<GraphNode>();
         }
 
+        public bool Visited { get; set; }
+
         public string Word { get; set; }
 
         public GraphNode PreviousNode { get; set; }

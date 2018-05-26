@@ -18,6 +18,7 @@ namespace WordDistance.Implementations
             while (QueueNotEmpty(queue))
             {
                 var node = queue.Dequeue();
+                node.Visited = true;
 
                 foreach (var referencedNode in node.ReferencedNodes)
                 {
@@ -29,7 +30,10 @@ namespace WordDistance.Implementations
                         break;
                     }
 
-                    queue.Enqueue(referencedNode);
+                    if (!referencedNode.Visited)
+                    {
+                        queue.Enqueue(referencedNode);
+                    }
                 }
 
                 if (pathFound)

@@ -16,6 +16,11 @@ namespace WordDistance.Implementations
 
         public GraphNode GetNodeByWord(string word)
         {
+            if (!_wordGraphNodeMapping.ContainsKey(word))
+            {
+                throw new WordNotFoundInDictionaryException(word);
+            }
+
             return _wordGraphNodeMapping[word];
         }
 
