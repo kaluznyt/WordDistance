@@ -6,42 +6,35 @@ namespace WordDistance
     public class ShortestEditPathLister : IWordPathLister
     {
         private readonly ICollection<string> _wordDictionary;
+        private readonly IWordDistanceCalculator _wordDistanceCalculator;
 
-        public ShortestEditPathLister(ICollection<string> wordDictionary)
+        public ShortestEditPathLister(ICollection<string> wordDictionary, IWordDistanceCalculator wordDistanceCalculator)
         {
             _wordDictionary = wordDictionary;
+            _wordDistanceCalculator = wordDistanceCalculator;
+            _wordDistanceCalculator = new HammingWordDistanceCalculator();
         }
 
         public string[] ListPath(string startWord, string endWord)
         {
             var wordLength = startWord.Length;
 
-            var sameLengthWords = _wordDictionary.Where(word => IsOfLength(word, wordLength)).Distinct();
-
-            var wordDistanceCalculator = new HammingWordDistanceCalculator();
+            var wordsOfEqualLength = _wordDictionary.Where(word => IsOfLength(word, wordLength)).Distinct().ToList();
 
             var wordGraphNodeMapping = new Dictionary<string, GraphNode>();
 
-            var checkedWords = sameLengthWords.ToList();
-
-            foreach (var checkedWord in checkedWords)
+            foreach (var checkedWord in wordsOfEqualLength)
             {
                 var currentWordNode = GetOrCreateGraphNode(wordGraphNodeMapping, checkedWord);
 
-                foreach (var otherWord in checkedWords)
+                foreach (var otherWord in wordsOfEqualLength)
                 {
                     if (checkedWord == otherWord)
                     {
                         continue;
                     }
 
-                    var distance = wordDistanceCalculator.Calculate(checkedWord, otherWord);
-
-                    if (distance == 1)
-                    {
-                        var otherWordGraphNode = GetOrCreateGraphNode(wordGraphNodeMapping, otherWord);
-                        currentWordNode.ReferencedNodes.Add(otherWordGraphNode);
-                    }
+                    IsSmallestPossibleDistance(checkedWord, otherWord, wordGraphNodeMapping, currentWordNode);
                 }
             }
 
@@ -51,6 +44,18 @@ namespace WordDistance
             var path = FindShortestPath(startWordGraphNode, endWordGraphNode);
 
             return path.ToArray();
+        }
+
+        private void IsSmallestPossibleDistance(string checkedWord, string otherWord, Dictionary<string, GraphNode> wordGraphNodeMapping,
+            GraphNode currentWordNode)
+        {
+            var distance = _wordDistanceCalculator.Calculate(checkedWord, otherWord);
+
+            if (distance == 1)
+            {
+                var otherWordGraphNode = GetOrCreateGraphNode(wordGraphNodeMapping, otherWord);
+                currentWordNode.ReferencedNodes.Add(otherWordGraphNode);
+            }
         }
 
         private ICollection<string> FindShortestPath(GraphNode startWordGraphNode, GraphNode endWordGraphNode)
@@ -86,18 +91,23 @@ namespace WordDistance
                 }
             }
 
-            var processNode = endWordGraphNode;
+            var foundNode = endWordGraphNode;
 
-            while (processNode != null)
+            if (foundNode.PreviousNode == null)
             {
-                result.Add(processNode.Word);
+                throw new ImpossibleToFindPathException("It is not possible to find a solution with provided input");
+            }
 
-                if (processNode == startWordGraphNode)
+            while (foundNode != null)
+            {
+                result.Add(foundNode.Word);
+
+                if (foundNode == startWordGraphNode)
                 {
                     break;
                 }
 
-                processNode = processNode.PreviousNode;
+                foundNode = foundNode.PreviousNode;
             }
 
             result.Reverse();

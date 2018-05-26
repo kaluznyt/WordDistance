@@ -2,7 +2,7 @@
 
 namespace WordDistance
 {
-    public class GraphNode
+    public class GraphNode : IGraphNode
     {
         public GraphNode()
         {
