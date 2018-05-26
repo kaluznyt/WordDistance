@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using ManyConsole;
+using WordDistance.Implementations;
+using WordDistance.Interfaces;
 
-namespace WordDistance
+namespace WordDistance.ConsoleProgram
 {
     public class ShortestPathCommand : ConsoleCommand
     {
@@ -29,7 +31,11 @@ namespace WordDistance
 
                 IWordDistanceCalculator wordDistanceCalculator = new HammingWordDistanceCalculator();
 
-                IWordPathLister wordPathLister = new ShortestEditPathLister(wordDistanceCalculator);
+                IGraphBuilder graphBuilder = new GraphBuilder(wordDistanceCalculator);
+
+                IShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+
+                IWordPathLister wordPathLister = new ShortestEditPathLister(shortestPathFinder, graphBuilder);
 
                 var result = wordPathLister.ListPath(_startWord, _endWord, dictionary);
 

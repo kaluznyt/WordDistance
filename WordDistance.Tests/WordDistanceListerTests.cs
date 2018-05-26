@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using WordDistance.Exceptions;
+using WordDistance.Implementations;
+using Xunit;
 
 namespace WordDistance.Tests
 {
@@ -29,11 +31,18 @@ namespace WordDistance.Tests
                 "Spot"
             };
 
-            var wordDistanceLister = new ShortestEditPathLister(new HammingWordDistanceCalculator());
+            var wordDistanceLister = WordDistanceListerFactory();
 
             var results = wordDistanceLister.ListPath(startWord, endWord, mockWordDictionary);
 
             Assert.Equal(expectedResult, results);
+        }
+
+        private static ShortestEditPathLister WordDistanceListerFactory()
+        {
+            return new ShortestEditPathLister(new ShortestPathFinder(), 
+                                              new GraphBuilder(
+                                                    new HammingWordDistanceCalculator()));
         }
 
         [Fact]
@@ -50,7 +59,7 @@ namespace WordDistance.Tests
                 "Spot"
             };
 
-            var wordDistanceLister = new ShortestEditPathLister(new HammingWordDistanceCalculator());
+            var wordDistanceLister = WordDistanceListerFactory();
 
             Assert.Throws<ImpossibleToFindPathException>(() => wordDistanceLister.ListPath(startWord, endWord, mockWordDictionary));
         }

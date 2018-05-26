@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using WordDistance.Interfaces;
 
-namespace WordDistance
+namespace WordDistance.Implementations
 {
     public class GraphNode : IGraphNode
     {

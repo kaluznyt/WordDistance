@@ -1,4 +1,4 @@
-﻿namespace WordDistance
+﻿namespace WordDistance.Interfaces
 {
     public interface IWordPathLister
     {

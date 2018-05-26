@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ManyConsole;
 
-namespace WordDistance
+namespace WordDistance.ConsoleProgram
 {
     public class ConsoleCommandDispatcherWrapper
     {

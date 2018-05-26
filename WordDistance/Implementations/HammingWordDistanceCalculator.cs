@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using WordDistance.Interfaces;
 
-namespace WordDistance
+namespace WordDistance.Implementations
 {
     public class HammingWordDistanceCalculator : IWordDistanceCalculator
     {

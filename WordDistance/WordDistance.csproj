@@ -72,8 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleProgram\ConsoleCommandDispatcherWrapper.cs" />
+    <Compile Include="Implementations\GraphBuilder.cs" />
+    <Compile Include="Interfaces\IGraphBuilder.cs" />
+    <Compile Include="Interfaces\IShortestPathFinder.cs" />
     <Compile Include="Implementations\ShortestEditPathLister.cs" />
     <Compile Include="Implementations\GraphNode.cs" />
+    <Compile Include="Implementations\ShortestPathFinder.cs" />
     <Compile Include="Interfaces\IGraphNode.cs" />
     <Compile Include="Exceptions\ImpossibleToFindPathException.cs" />
     <Compile Include="Interfaces\IWordDistanceCalculator.cs" />
@@ -85,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="ConsoleProgram\run.ps1">
+    <Content Include="run.ps1">
       <TargetPath>run.ps1</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

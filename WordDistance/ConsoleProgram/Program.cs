@@ -1,6 +1,8 @@
 ﻿using Autofac;
+using WordDistance.Implementations;
+using WordDistance.Interfaces;
 
-namespace WordDistance
+namespace WordDistance.ConsoleProgram
 {
     class Program
     {

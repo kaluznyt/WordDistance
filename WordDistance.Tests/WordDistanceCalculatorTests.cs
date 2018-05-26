@@ -1,4 +1,6 @@
 ﻿using System;
+using WordDistance.Implementations;
+using WordDistance.Interfaces;
 using Xunit;
 
 namespace WordDistance.Tests

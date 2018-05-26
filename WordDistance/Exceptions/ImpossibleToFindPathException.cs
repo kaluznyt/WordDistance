@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WordDistance
+namespace WordDistance.Exceptions
 {
     public class ImpossibleToFindPathException : Exception
     {
