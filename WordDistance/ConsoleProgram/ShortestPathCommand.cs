@@ -41,6 +41,10 @@ namespace WordDistance
 
                 return -1;
             }
+            finally
+            {
+                Console.WriteLine("Command executed successfully");
+            }
 
             return 0;
         }
