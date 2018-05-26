@@ -93,6 +93,7 @@
       <TargetPath>run.ps1</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Description\Description.docx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
