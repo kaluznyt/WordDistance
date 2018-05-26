@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace WordDistance.Tests
+namespace WordDistance
 {
-    public class WordDistanceCalculator
+    public class HammingWordDistanceCalculator : IWordDistanceCalculator
     {
         public int Calculate(string startWord, string endWord)
         {

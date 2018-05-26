@@ -57,15 +57,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WordDistanceCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WordDistanceCalculatorTests.cs" />
+    <Compile Include="WordDistanceListerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WordDistance\WordDistance.csproj">
+      <Project>{DD8BB61F-8830-43C2-8F5C-80F4A75D45CD}</Project>
+      <Name>WordDistance</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

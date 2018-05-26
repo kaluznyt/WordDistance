@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordDistance", "WordDistanc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordDistance.Tests", "WordDistance.Tests\WordDistance.Tests.csproj", "{3497C79F-C529-45B7-B003-64D7D8241D06}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{D6777BDE-865B-4E7B-94E4-BCFB2FBA5C31}"
+	ProjectSection(SolutionItems) = preProject
+		Data\words-english.txt = Data\words-english.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

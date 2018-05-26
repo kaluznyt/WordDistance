@@ -7,6 +7,7 @@ namespace WordDistance.Tests
     {
         [Theory]
         [InlineData("spin", "spot", 2)]
+        [InlineData("book", "back", 2)]
         [InlineData("spina", "spotd", 3)]
         [InlineData("abce", "bcde", 3)]
         [InlineData("tomasz", "tomasx", 1)]
@@ -14,7 +15,7 @@ namespace WordDistance.Tests
         [InlineData("aombsz", "tomasx", 3)]
         public void Calculate_Word_Distance_Returns_Shortest_Path(string startWord, string endWord, int expectedDistance)
         {
-            var wordDistanceCalculator = new WordDistanceCalculator();
+            var wordDistanceCalculator = DistanceCalculatorFactory();
 
             var calculatedDistance = wordDistanceCalculator.Calculate(startWord, endWord);
 
@@ -31,7 +32,7 @@ namespace WordDistance.Tests
         [InlineData("word", "")]
         public void Calculate_Empty_Words_Throw_ArgumentException(string startWord, string endWord)
         {
-            var wordDistanceCalculator = new WordDistanceCalculator();
+            var wordDistanceCalculator = DistanceCalculatorFactory();
 
             Assert.Throws<ArgumentException>(() => wordDistanceCalculator.Calculate(startWord, endWord));
         }
@@ -41,9 +42,14 @@ namespace WordDistance.Tests
         [InlineData("word", "wordd")]
         public void Calculate_Different_Length_Words_Throw_ArgumentException(string startWord, string endWord)
         {
-            var wordDistanceCalculator = new WordDistanceCalculator();
+            var wordDistanceCalculator = DistanceCalculatorFactory();
 
             Assert.Throws<ArgumentException>(() => wordDistanceCalculator.Calculate(startWord, endWord));
+        }
+
+        private static IWordDistanceCalculator DistanceCalculatorFactory()
+        {
+            return new HammingWordDistanceCalculator();
         }
     }
 }
