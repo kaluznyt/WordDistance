@@ -85,17 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <ContentWithTargetPath Include="ConsoleProgram\run.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="ConsoleProgram\run.ps1">
       <TargetPath>run.ps1</TargetPath>
-    </ContentWithTargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ContentWithTargetPath Include="DictionaryFile\words-english.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="DictionaryFile\words-english.txt">
       <TargetPath>words-english.txt</TargetPath>
-    </ContentWithTargetPath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

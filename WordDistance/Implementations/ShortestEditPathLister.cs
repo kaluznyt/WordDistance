@@ -6,6 +6,7 @@ namespace WordDistance
     public class ShortestEditPathLister : IWordPathLister
     {
         private readonly IWordDistanceCalculator _wordDistanceCalculator;
+        private IDictionary<string, GraphNode> _wordGraphNodeMapping;
 
         public ShortestEditPathLister(IWordDistanceCalculator wordDistanceCalculator)
         {
@@ -16,13 +17,13 @@ namespace WordDistance
         {
             var wordLength = startWord.Length;
 
-            var wordsOfEqualLength = dictionary.Where(word => IsOfLength(word, wordLength)).Distinct().ToList();
+            var wordsOfEqualLength = ReturnAllWordsWithSameLengthAsInputWord(dictionary, wordLength);
 
-            var wordGraphNodeMapping = new Dictionary<string, GraphNode>();
+            _wordGraphNodeMapping = new Dictionary<string, GraphNode>();
 
             foreach (var checkedWord in wordsOfEqualLength)
             {
-                var currentWordNode = GetOrCreateGraphNode(wordGraphNodeMapping, checkedWord);
+                var currentWordNode = GetOrCreateGraphNode(checkedWord);
 
                 foreach (var otherWord in wordsOfEqualLength)
                 {
@@ -31,70 +32,97 @@ namespace WordDistance
                         continue;
                     }
 
-                    IsSmallestPossibleDistance(checkedWord, otherWord, wordGraphNodeMapping, currentWordNode);
+                    BuildGraphReferencesJustForSmallestPossibleWordDistance(checkedWord, otherWord, currentWordNode);
                 }
             }
 
-            var startWordGraphNode = wordGraphNodeMapping[startWord];
-            var endWordGraphNode = wordGraphNodeMapping[endWord];
+            var startWordGraphNode = _wordGraphNodeMapping[startWord];
+            var endWordGraphNode = _wordGraphNodeMapping[endWord];
 
             var path = FindShortestPath(startWordGraphNode, endWordGraphNode);
 
             return path.ToArray();
         }
 
-        private void IsSmallestPossibleDistance(string checkedWord, string otherWord, Dictionary<string, GraphNode> wordGraphNodeMapping,
-            GraphNode currentWordNode)
+        private List<string> ReturnAllWordsWithSameLengthAsInputWord(string[] dictionary, int wordLength)
         {
-            var distance = _wordDistanceCalculator.Calculate(checkedWord, otherWord);
+            return dictionary.Where(word => IsOfLength(word, wordLength)).Distinct().ToList();
+        }
 
-            if (distance == 1)
+        private void BuildGraphReferencesJustForSmallestPossibleWordDistance(
+                                    string currentWord,
+                                    string otherWord,
+                                    GraphNode currentWordNode)
+        {
+            const int smallestDistance = 1;
+            var distance = _wordDistanceCalculator.Calculate(currentWord, otherWord);
+
+            if (distance == smallestDistance)
             {
-                var otherWordGraphNode = GetOrCreateGraphNode(wordGraphNodeMapping, otherWord);
+                var otherWordGraphNode = GetOrCreateGraphNode(otherWord);
+
                 currentWordNode.ReferencedNodes.Add(otherWordGraphNode);
             }
         }
 
         private ICollection<string> FindShortestPath(GraphNode startWordGraphNode, GraphNode endWordGraphNode)
         {
-            var result = new List<string>();
-
             var queue = new Queue<GraphNode>();
 
             queue.Enqueue(startWordGraphNode);
 
-            var shouldBreak = false;
+            var pathFound = false;
 
-            while (queue.Count > 0)
+            while (QueueNotEmpty(queue))
             {
                 var node = queue.Dequeue();
 
-                foreach (var nodeReferencedNode in node.ReferencedNodes)
+                foreach (var referencedNode in node.ReferencedNodes)
                 {
-                    if (nodeReferencedNode.PreviousNode == null)
-                        nodeReferencedNode.PreviousNode = node;
+                    SetPreviousNode(referencedNode, node);
 
-                    if (nodeReferencedNode == endWordGraphNode)
+                    if (referencedNode == endWordGraphNode)
                     {
-                        shouldBreak = true;
+                        pathFound = true;
+                        break;
                     }
 
-                    queue.Enqueue(nodeReferencedNode);
+                    queue.Enqueue(referencedNode);
                 }
 
-                if (shouldBreak)
+                if (pathFound)
                 {
                     break;
                 }
             }
 
-            var foundNode = endWordGraphNode;
-
-            if (foundNode.PreviousNode == null)
+            if (!pathFound)
             {
                 throw new ImpossibleToFindPathException("It is not possible to find a solution with provided input");
             }
 
+            var result = RetrieveResultWordPath(startWordGraphNode, endWordGraphNode);
+
+            return result.Reverse().ToArray();
+        }
+
+        private void SetPreviousNode(GraphNode referencedNode, GraphNode node)
+        {
+            if (referencedNode.PreviousNode == null)
+            {
+                referencedNode.PreviousNode = node;
+            }
+        }
+
+        private bool QueueNotEmpty(Queue<GraphNode> queue)
+        {
+            return queue.Count > 0;
+        }
+
+        private ICollection<string> RetrieveResultWordPath(GraphNode startWordGraphNode, GraphNode foundNode)
+        {
+            var result = new List<string>();
+            
             while (foundNode != null)
             {
                 result.Add(foundNode.Word);
@@ -107,28 +135,26 @@ namespace WordDistance
                 foundNode = foundNode.PreviousNode;
             }
 
-            result.Reverse();
-
-            return result.ToArray();
+            return result;
         }
 
-        private GraphNode GetOrCreateGraphNode(Dictionary<string, GraphNode> wordGraphNodeMapping, string checkedWord)
+        private GraphNode GetOrCreateGraphNode(string checkedWord)
         {
             GraphNode currentWordNode;
 
-            if (wordGraphNodeMapping.ContainsKey(checkedWord))
+            if (_wordGraphNodeMapping.ContainsKey(checkedWord))
             {
-                currentWordNode = wordGraphNodeMapping[checkedWord];
+                currentWordNode = _wordGraphNodeMapping[checkedWord];
             }
             else
             {
-                currentWordNode = wordGraphNodeMapping[checkedWord] = new GraphNode() { Word = checkedWord };
+                currentWordNode = _wordGraphNodeMapping[checkedWord] = new GraphNode() { Word = checkedWord };
             }
 
             return currentWordNode;
         }
 
-        private static bool IsOfLength(string word, int wordLength)
+        private bool IsOfLength(string word, int wordLength)
         {
             return word.Length == wordLength;
         }
