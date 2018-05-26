@@ -5,21 +5,18 @@ namespace WordDistance
 {
     public class ShortestEditPathLister : IWordPathLister
     {
-        private readonly ICollection<string> _wordDictionary;
         private readonly IWordDistanceCalculator _wordDistanceCalculator;
 
-        public ShortestEditPathLister(ICollection<string> wordDictionary, IWordDistanceCalculator wordDistanceCalculator)
+        public ShortestEditPathLister(IWordDistanceCalculator wordDistanceCalculator)
         {
-            _wordDictionary = wordDictionary;
             _wordDistanceCalculator = wordDistanceCalculator;
-            _wordDistanceCalculator = new HammingWordDistanceCalculator();
         }
 
-        public string[] ListPath(string startWord, string endWord)
+        public string[] ListPath(string startWord, string endWord, string[] dictionary)
         {
             var wordLength = startWord.Length;
 
-            var wordsOfEqualLength = _wordDictionary.Where(word => IsOfLength(word, wordLength)).Distinct().ToList();
+            var wordsOfEqualLength = dictionary.Where(word => IsOfLength(word, wordLength)).Distinct().ToList();
 
             var wordGraphNodeMapping = new Dictionary<string, GraphNode>();
 

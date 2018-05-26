@@ -17,8 +17,7 @@ namespace WordDistance
                 throw new ArgumentException($"{nameof(startWord)} and {nameof(endWord)} should have the same length");
             }
 
-            return startWord.Select((character, characterIndex) => character != endWord[characterIndex] ? 1 : 0)
-                            .Sum();
+            return startWord.Select((character, characterIndex) => character != endWord[characterIndex] ? 1 : 0).Sum();
         }
     }
 }

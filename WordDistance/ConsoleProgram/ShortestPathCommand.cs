@@ -29,9 +29,9 @@ namespace WordDistance
 
                 IWordDistanceCalculator wordDistanceCalculator = new HammingWordDistanceCalculator();
 
-                IWordPathLister wordPathLister = new ShortestEditPathLister(dictionary, wordDistanceCalculator);
+                IWordPathLister wordPathLister = new ShortestEditPathLister(wordDistanceCalculator);
 
-                var result = wordPathLister.ListPath(_startWord, _endWord);
+                var result = wordPathLister.ListPath(_startWord, _endWord, dictionary);
 
                 File.WriteAllLines(_resultFile, result);
             }
